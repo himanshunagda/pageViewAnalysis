@@ -16,4 +16,16 @@ router.get('/countries', async function(req, res, next) {
   let result = await services.getCountries();
   res.send(result);
 });
+
+router.post('/filterByCountry', async function(req, res, next) {
+  console.log(req.body.country);
+  let result = await services.getViews(req.body.country);
+  res.send(JSON.stringify(result.value));
+});
+
+router.post('/page', async function(req, res, next) {
+  let result = await services.getViewsByPageId(req.body.page);
+  console.log(result);
+  res.send(JSON.stringify(result));
+});
 module.exports = router;

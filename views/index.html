@@ -23,14 +23,15 @@
             console.log(this.responseText);
             countries = JSON.parse(this.responseText);
         }
-        console.log(countries);
+        setTimeout(function(){ drawBasic() }, 300);
         function drawBasic() {
+            console.log('responsi bhai', countries);
             var data = google.visualization.arrayToDataTable([
                 ['Countries', 'Views',],
-                ['Germany', countries.Germany],
-                ['India', countries.India],
-                ['US', countries.US],
-                ['UK', countries.UK]
+                ['Germany', countries[0]],
+                ['India', countries[1]],
+                ['US', countries[2]],
+                ['UK', countries[3]]
             ]);
 
             var options = {
@@ -49,6 +50,46 @@
 
             chart.draw(data, options);
         }
+        $(function getSelected() {
+            let views;
+            var output = document.getElementById('output');
+            $('#dynamic_select').on('change', function () {
+                var value = $(this).val();
+                console.log(value);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/users/filterByCountry", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    country: value
+                }));
+                xhr.onload = function () {
+                    console.log('result is', this.responseText);
+                    views = this.responseText;
+                    console.log('views are', views);
+                    output.innerHTML = views;
+                }
+            });
+        });
+        $(function getviews() {
+            let views;
+            var output = document.getElementById('outputTest');
+            $('#dynamic').on('change', function () {
+                var value = $(this).val();
+                console.log(value);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/users/page", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    page: value
+                }));
+                xhr.onload = function () {
+                    console.log('result is', this.responseText);
+                    views = this.responseText;
+                    console.log('views are', views);
+                    output.innerHTML = views;
+                }
+            });
+        });
     </script>
     <style>
         /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
@@ -85,7 +126,9 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a href="#home">Home</a></li>
+                    <li class="active"><a href="/about">AboutUS</a></li>
+                    <li class="active"><a href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -96,7 +139,9 @@
             <div class="col-sm-3 sidenav hidden-xs">
                 <h2>Page Analytic App</h2>
                 <ul class="nav nav-pills nav-stacked">
-                    <li class="active"><a href="#section1">Home</a></li>
+                    <li class="active"><a href="#home">Home</a></li>
+                    <li class="active"><a href="/about">AboutUs</a></li>
+                    <li class="active"><a href="#contact">Contact</a></li>
                 </ul><br>
             </div>
             <br>
@@ -135,31 +180,25 @@
                 <div class="row">
                     <div class="col-sm-3">
                         <h4>Users views on Pages</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="menu1"
-                                data-toggle="dropdown">List of Pages
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Homepage</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">AboutUs</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Contact</a></li>
-                            </ul>
-                            <p>10</p>
-                        </div>
+                            <select id="dynamic">
+                                <option value="" selected>Select Page</option>
+                                <option value="home" onClick="getviews(this)">Home</p></option>
+                                <option value="about" onClick="getviews(this)">AboutUs</option>
+                            </select>
+                            <h4>Views</h4>
+                            <div id="outputTest"></div>
                     </div>
                     <div class="col-sm-3">
                         <h4>Users views filter by country</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="menu1"
-                                data-toggle="dropdown">List of Countires
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Germany</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">India</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">US</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">UK</a></li>
-                            </ul>
-                        </div>
+                        <select id="dynamic_select">
+                            <option value="" selected>Select Country</option>
+                            <option value="Germany" onClick="getSelected(this)">Germany</option>
+                            <option value="India" onClick="getSelected(this)">India</option>
+                            <option value="US" onClick="getSelected(this)">US</option>
+                            <option value="UK" onClick="getSelected(this)">UK</option>
+                        </select>
+                        <h4>Views</h4>
+                        <div id="output"></div>
                     </div>
                     <div class="col-sm-6">
                         <div class="well">

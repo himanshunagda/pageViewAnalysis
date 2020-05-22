@@ -2,7 +2,8 @@ const rp = require('request-promise');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/Stat');
 var addCountry = require('../models/country');
-
+var stats = require('../models/stat');
+var about = require('../models/about');
 const getCountry = async (req, res) => {
     let url = 'https://ipinfo.io';
     let headers = {
@@ -18,39 +19,69 @@ const getCountry = async (req, res) => {
     return response
 }
 
-const getCountries = async (req, res) => {
-    let countries;
+const getAllViews =  (finalResult) => {
     let country1 = [];
     let country2 = [];
     let country3 = [];
     let country4 = [];
-    await addCountry.find({}, "country", (err, country) => {
-        if (err) {
+    finalResult.forEach(country => {
+        if (country.country == 'DE') {
+            country1.push(country)
+        } else if (country.country == 'INDIA') {
+            country2.push(country)
+        } else if (country.country == 'US') {
+            country3.push(country)
+        } else if (country.country == 'UK') {
+            country4.push(country)
         }
-        countries = country;
-        countries.forEach(country => {
-            if (country.country == 'DE') {
-                country1.push(country)
-            } else if (country.country == 'INDIA') {
-                country2.push(country)
-            } else if (country.country == 'US') {
-                country3.push(country)
-            } else if (country.country == 'UK') {
-                country4.push(country)
-            }
-        })
     })
-    let obj = {
-        Germany: country1.length,
-        India: country2.length,
-        US: country3.length,
-        UK: country4.length
-    }
-    let finalArr = [country1.length, country2.length, country3.length, country4.length]
-    return obj;
+    return [country1.length, country2.length, country3.length, country4.length]
+}
+const getCountries = async () => {
+    let finalResult = await addCountry.find({}, "country");
+    let finalArr = await getAllViews(finalResult);
+    console.log(finalArr);
+    return finalArr
 }
 
+const getViews = async (country) => {
+    let view;
+    let finalResult = await addCountry.find({}, "country");
+    let finalArr = await getAllViews(finalResult);
+    console.log(finalArr);
+    if (country === 'Germany') {
+        view = finalArr[0];
+    } else if (country === 'India') {
+        view = finalArr[1]
+    } else if (country === 'US') {
+        view = finalArr[2]
+    } else if (country === 'UK') {
+        view = finalArr[3]
+    }
+    console.log(view);
+    return { value: view };
+}
+
+const getViewsByPageId = async (pageId) => {
+    let views;
+    if (pageId === 'home') {
+        await stats.find({ name: "counter" }, (err, result) => {
+            if (err) {
+            }
+            views = result[0].count;
+        })
+    } else if (pageId === 'about') {
+        await about.find({ name: "counter" }, (err, result) => {
+            if (err) {
+            }
+            views = result[0].count;
+        })
+    }
+    return views
+}
 module.exports = {
     getCountry,
-    getCountries
+    getCountries,
+    getViews,
+    getViewsByPageId
 }
