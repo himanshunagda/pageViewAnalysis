@@ -28,4 +28,22 @@ router.post('/page', async function(req, res, next) {
   console.log(result);
   res.send(JSON.stringify(result));
 });
+
+router.post('/browser', async function(req, res, next) {
+  console.log(req.body.browser)
+  let result = await services.addBrowser(req.body.browser);
+  console.log(result);
+  res.send(result);
+});
+
+router.get('/readBrowser', async function(req, res, next) {
+  let result = await services.getBrowserValue();
+  console.log(result);
+  res.send(result);
+});
+
+router.get('/activeusers', async function(req, res, next) {
+  let result = await services.getActiveUsers();
+  res.send(JSON.stringify(result.views));
+});
 module.exports = router;

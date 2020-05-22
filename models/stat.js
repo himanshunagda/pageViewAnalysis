@@ -7,8 +7,7 @@ const statSchema = new Schema({
     },
     count: {
         type: Number,
-    },
-    created_at: { type: Date, required: true, default: Date.now }
+    }
 })
 
 module.exports = mongoose.model("stat", statSchema)

@@ -4,6 +4,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/Stat');
 var addCountry = require('../models/country');
 var stats = require('../models/stat');
 var about = require('../models/about');
+var browser = require('../models/browser');
+var users = require('../models/activeusers');
 const getCountry = async (req, res) => {
     let url = 'https://ipinfo.io';
     let headers = {
@@ -19,7 +21,7 @@ const getCountry = async (req, res) => {
     return response
 }
 
-const getAllViews =  (finalResult) => {
+const getAllViews = (finalResult) => {
     let country1 = [];
     let country2 = [];
     let country3 = [];
@@ -79,9 +81,51 @@ const getViewsByPageId = async (pageId) => {
     }
     return views
 }
+
+const addBrowser = async (browserName) => {
+    let list = new browser();
+    list.browser = browserName;
+    list.save(function (err, counter) {
+    });
+    return true;
+}
+const getBrowserViews = (finalResult) => {
+    let browser1 = [];
+    let browser2 = [];
+    let browser3 = [];
+    let browser4 = [];
+    finalResult.forEach(result => {
+        if (result.browser == 'chrome') {
+            browser1.push(result)
+        } else if (result.browser == 'safari') {
+            browser2.push(result)
+        } else if (result.browser == 'firefox') {
+            browser3.push(result)
+        } else if (result.browser == 'edge') {
+            browser4.push(result)
+        }
+    })
+    return [browser1.length, browser2.length, browser2.length, browser3.length]
+}
+const getBrowserValue = async () => {
+    let finalResult = await browser.find({}, "browser");
+    console.log(finalResult);
+    let finalArr = await getBrowserViews(finalResult);
+    console.log(finalArr);
+    return finalArr
+}
+
+const getActiveUsers = async () => {
+    let finalResult = await users.find({"created_at":{$gt:new Date(Date.now() - 30*60*1000)}});
+    return {
+        views: finalResult.length};
+}
 module.exports = {
     getCountry,
     getCountries,
     getViews,
-    getViewsByPageId
+    getViewsByPageId,
+    addBrowser,
+    getBrowserValue,
+    getActiveUsers
 }

@@ -12,6 +12,9 @@
     <script type="text/javascript">
         google.charts.load('current', { packages: ['corechart', 'bar'] });
         google.charts.setOnLoadCallback(drawBasic);
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
         var countries;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "/users/countries", true);
@@ -23,9 +26,8 @@
             console.log(this.responseText);
             countries = JSON.parse(this.responseText);
         }
-        setTimeout(function(){ drawBasic() }, 300);
+        setTimeout(function () { drawBasic() }, 300);
         function drawBasic() {
-            console.log('responsi bhai', countries);
             var data = google.visualization.arrayToDataTable([
                 ['Countries', 'Views',],
                 ['Germany', countries[0]],
@@ -47,6 +49,36 @@
             };
 
             var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+
+        var browserViews;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/users/readBrowser", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            value: 'value'
+        }));
+        xhr.onload = function () {
+            browserViews = JSON.parse(this.responseText);
+        }
+        setTimeout(function () { drawChart() }, 300);
+        function drawChart() {
+            console.log('testing s', browserViews);
+            var data = google.visualization.arrayToDataTable([
+                ['Views', 'browser'],
+                ['Chrome', browserViews[0]],
+                ['Safari', browserViews[1]],
+                ['Firefox', browserViews[2]],
+                ['Edge', browserViews[3]]
+            ]);
+
+            var options = {
+                title: 'Views based on browser'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
         }
@@ -83,13 +115,36 @@
                     page: value
                 }));
                 xhr.onload = function () {
-                    console.log('result is', this.responseText);
                     views = this.responseText;
-                    console.log('views are', views);
                     output.innerHTML = views;
                 }
             });
         });
+
+        var browser = (function (agent) {
+            switch (true) {
+                case agent.indexOf("edge") > -1: return "edge";
+                case agent.indexOf("edg") > -1: return "chromium based edge (dev or canary)";
+                case agent.indexOf("opr") > -1 && !!window.opr: return "opera";
+                case agent.indexOf("chrome") > -1 && !!window.chrome: return "chrome";
+                case agent.indexOf("trident") > -1: return "ie";
+                case agent.indexOf("firefox") > -1: return "firefox";
+                case agent.indexOf("safari") > -1: return "safari";
+                default: return "other";
+            }
+        })(window.navigator.userAgent.toLowerCase());
+        function browserValue(browser) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/users/browser", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                browser: browser
+            }));
+            xhr.onload = function () {
+                console.log(this.responseText);
+            }
+        }
+        var addBrowser = browserValue(browser);
     </script>
     <style>
         /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
@@ -143,6 +198,10 @@
                     <li class="active"><a href="/about">AboutUs</a></li>
                     <li class="active"><a href="#contact">Contact</a></li>
                 </ul><br>
+                <div class="relative">
+                        <h4>Views based on browser</h4>
+                        <div id="piechart" style="width: 320px; height: 280px;"></div>
+                </div>
             </div>
             <br>
 
@@ -167,7 +226,7 @@
                     <div class="col-sm-3">
                         <div class="well">
                             <h4>Active Users in last 30 minutes</h4>
-                            <p>10 Million</p>
+                            <p><%= userview %></p>
                         </div>
                     </div>
                     <div class="col-sm-3">
@@ -180,13 +239,14 @@
                 <div class="row">
                     <div class="col-sm-3">
                         <h4>Users views on Pages</h4>
-                            <select id="dynamic">
-                                <option value="" selected>Select Page</option>
-                                <option value="home" onClick="getviews(this)">Home</p></option>
-                                <option value="about" onClick="getviews(this)">AboutUs</option>
-                            </select>
-                            <h4>Views</h4>
-                            <div id="outputTest"></div>
+                        <select id="dynamic">
+                            <option value="" selected>Select Page</option>
+                            <option value="home" onClick="getviews(this)">Home</p>
+                            </option>
+                            <option value="about" onClick="getviews(this)">AboutUs</option>
+                        </select>
+                        <h4>Views</h4>
+                        <div id="outputTest"></div>
                     </div>
                     <div class="col-sm-3">
                         <h4>Users views filter by country</h4>
@@ -200,14 +260,13 @@
                         <h4>Views</h4>
                         <div id="output"></div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-5">
                         <div class="well">
                             <h4>Views over globe</h4>
-                            <div id="chart_div" style="width: 400px; height: 400px;"></div>
+                            <div id="chart_div" style="width: 350px; height: 400px;"></div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
