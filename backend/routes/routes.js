@@ -1,7 +1,20 @@
 var express = require('express');
 var router = express.Router();
 const services = require('../services/services');
+var session = require('../../models/session');
 
+const verifyToken = () => {
+    return async (req, res, next) => {
+        let jwtToken = req.body.token;
+        let readFromDB = await session.find({}, "session");
+        let result = readFromDB.includes(readFromDB.find(value => value.session === jwtToken));
+        if (result === false) {
+            res.status(400).send('Server requires application/json')
+        } else {
+            next()
+        }
+    }
+}
 router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
@@ -11,7 +24,7 @@ router.get('/getUserCountry', async function (req, res, next) {
     res.send(result.country);
 });
 
-router.get('/getUsersFromCountries', async function (req, res, next) {
+router.post('/getUsersFromCountries', verifyToken(), async function (req, res, next) {
     let result = await services.getUsersFromCountries();
     res.send(result);
 });
@@ -41,7 +54,7 @@ router.get('/getActiveUsersinTime', async function (req, res, next) {
     res.send(JSON.stringify(result.views));
 });
 
-router.get('/addUserCountry', async function (req, res, next) {
+router.post('/addUserCountry', verifyToken(), async function (req, res, next) {
     let result = await services.addUserCountry();
     res.send((result));
 });
@@ -53,6 +66,21 @@ router.get('/filterViewsAboutPage', async function (req, res, next) {
 
 router.post('/token', async function (req, res, next) {
     let result = await services.generateToken(req.body.username);
+    res.send(result);
+});
+
+router.get('/viewValue', async function (req, res, next) {
+    let result = await services.viewValue();
+    res.send(JSON.stringify(result.count));
+});
+
+router.get('/addCountryToDB', async function (req, res, next) {
+    let result = await services.addCountryToDB();
+    res.send(result.country);
+});
+
+router.get('/getSession', async function (req, res, next) {
+    let result = await services.getSession();
     res.send(result);
 });
 module.exports = router;

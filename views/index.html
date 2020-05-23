@@ -11,14 +11,30 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-
-     function isLoggedIn() {
-            const token = localStorage.getItem('token')
+var token;
+        function isLoggedIn() {
+            token = localStorage.getItem('token')
             if (!token) {
                 window.location.href = "http://localhost:4000/"
             }
         }
         var test = isLoggedIn();
+
+        function addCountryToDB() {
+            let country;
+            //var output = document.getElementById('counter');
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/api/addCountryToDB", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+            }));
+            xhr.onload = function () {
+                country = this.responseText;
+                var output = document.getElementById('country');
+                output.innerHTML = country;
+            }
+        }
+        var getCountryName = addCountryToDB();
 
         google.charts.load('current', { packages: ['corechart', 'bar'] });
         google.charts.setOnLoadCallback(drawBasic);
@@ -27,24 +43,44 @@
 
         var countries;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/api/getUsersFromCountries", true);
+        xhr.open("POST", "/api/getUsersFromCountries", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
-            value: 'value'
+            token: token
         }));
         xhr.onload = function () {
             countries = JSON.parse(this.responseText);
         }
         setTimeout(function () { drawBasic() }, 300);
         function drawBasic() {
+            let germany, india, us, uk;
+            if (countries[0] != 0) {
+                germany = countries[0] + 1;
+            } else {
+                germany = countries[0]
+            }
+            if (countries[1] != 0) {
+                india = countries[1] + 1;
+            } else {
+                india = countries[1];
+            }
+            if (countries[2] != 0) {
+                us = countries[2] + 1;
+            } else {
+                us = countries[2];
+            }
+            if (countries[3] != 0) {
+                uk = countries[3] + 1;
+            } else {
+                uk = countries[3];
+            }
             var data = google.visualization.arrayToDataTable([
                 ['Countries', 'Views',],
-                ['Germany', countries[0]],
-                ['India', countries[1]],
-                ['US', countries[2]],
-                ['UK', countries[3]]
+                ['Germany', germany],
+                ['India', india],
+                ['United States', us],
+                ['Unites Kingdom', uk]
             ]);
-
             var options = {
                 title: 'Views by Countries',
                 chartArea: { width: '50%' },
@@ -56,9 +92,7 @@
                     title: 'Countries'
                 }
             };
-
             var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-
             chart.draw(data, options);
         }
 
@@ -146,6 +180,21 @@
             }
         }
         var addBrowser = browserValue(browser);
+
+        function viewValue() {
+            let count;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/api/viewValue", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+            }));
+            xhr.onload = function () {
+                count = this.responseText;
+                var output = document.getElementById('counter');
+                output.innerHTML = count;
+            }
+        }
+        var getCounterValue = viewValue();
     </script>
     <style>
         /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
@@ -185,13 +234,13 @@
                 <div class="col-sm-3">
                     <div class="well">
                         <h4>Users</h4>
-                        <p><%= counter %></p>
+                        <span id="counter"></span>
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="well">
                         <h4>Recently Viewed by:</h4>
-                        <p><%= country %></p>
+                        <span id="country"></span>
                     </div>
                 </div>
                 <div class="col-sm-3">

@@ -3,17 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./server/serverStart"
   },
   "dependencies": {
-    "bourbon": "^7.0.0",
-    "clone": "^2.1.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "^3.1.3",
     "express": "~4.16.1",
-    "express-session": "^1.17.1",
-    "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
     "jquery": "^3.5.1",
     "jsonwebtoken": "^8.5.1",
@@ -21,8 +17,6 @@
     "morgan": "~1.9.1",
     "nodemon": "^2.0.4",
     "request": "^2.88.2",
-    "request-promise": "^4.2.5",
-    "uuid": "^8.1.0",
-    "zl-fetch": "^3.2.2"
+    "request-promise": "^4.2.5"
   }
 }

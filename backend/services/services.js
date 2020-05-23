@@ -91,10 +91,7 @@ const filterByPageId = async (pageId) => {
         let views;
         let result;
         if (pageId === 'home') {
-            result = await stats.find({ name: "counter" }, (err, result) => {
-                if (err) {
-                }
-            })
+            result = await stats.find({ name: "counter" });
         } else if (pageId === 'about') {
             result = await aboutPageViews.find({ name: "counter" }, (err, result) => {
                 if (err) {
@@ -217,6 +214,25 @@ const generateToken = async (username) => {
         throw error;
     }
 }
+
+const viewValue = async () => {
+    let result = await stats.find({ name: "counter" });
+    return result[0];
+}
+
+const addCountryToDB = async () => {
+    let countryInfo = await getUserCountry();
+    let list = new addCountry();
+    list.country = countryInfo.country;
+    let result = await list.save({});
+    return countryInfo;
+}
+const getSession = async () => {
+    let sessions = await session.find({}, 'session')
+    return {
+        value: sessions.length
+    }
+}
 module.exports = {
     getUserCountry,
     getUsersFromCountries,
@@ -227,5 +243,8 @@ module.exports = {
     getActiveUsersinTime,
     addUserCountry,
     filterViewsAboutPage,
-    generateToken
+    generateToken,
+    viewValue,
+    addCountryToDB,
+    getSession
 }
