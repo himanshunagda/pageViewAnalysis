@@ -216,21 +216,36 @@ const generateToken = async (username) => {
 }
 
 const viewValue = async () => {
-    let result = await stats.find({ name: "counter" });
-    return result[0];
+    try {
+        let result = await stats.find({ name: "counter" });
+        return result[0];
+    } catch (error) {
+        logger.error(error);
+        throw error;
+    }
 }
 
 const addCountryToDB = async () => {
-    let countryInfo = await getUserCountry();
-    let list = new addCountry();
-    list.country = countryInfo.country;
-    let result = await list.save({});
-    return countryInfo;
+    try {
+        let countryInfo = await getUserCountry();
+        let list = new addCountry();
+        list.country = countryInfo.country;
+        let result = await list.save({});
+        return countryInfo;
+    } catch (error) {
+        logger.error(error);
+        throw error;
+    }
 }
 const getSession = async () => {
-    let sessions = await session.find({}, 'session')
-    return {
-        value: sessions.length
+    try {
+        let sessions = await session.find({}, 'session')
+        return {
+            value: sessions.length
+        }
+    } catch (error) {
+        logger.error(error);
+        throw error;
     }
 }
 module.exports = {
