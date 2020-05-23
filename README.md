@@ -14,6 +14,9 @@ For example, some of the Filter options are:
 - Get page views by a browser name
 - Get page activity for a last 30 mins.
 
+### Technology Stack ###
+Backend: NodeJS, Mongoose
+Frontend: HTML, CSS, Bootstrap
 
 For more information on how this works with other frontends/backends, clone this repo and follow instructions.
 ### Getting Started ###
@@ -28,3 +31,21 @@ Mongoose
 
 Expressjs
 
+### Development Setup ###
+Explain how to install all development dependencies.
+
+`git clone https://github.com/himanshunagda/pageViewAnalysis`
+
+ `cd pageViewAnalysis`
+ 
+ `npm i`
+
+### How to initiate MongoDB/Mongoose ###
+ `node scripts/mongoInitiate.js`
+ 
+ ### Start the Development server ###
+ `npm start`
+ 
+ It starts project on http://localhost:4000/
+ 
+ 
