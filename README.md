@@ -1,5 +1,6 @@
 # pageViewAnalysis
 A Full stack Application for analysing Web pages
+![picture](img/app1.png)
 
 This codebase has been created to demonstrate a Full Stack Page Anaylsis application (Dashboard for analysing web pages).
 The service allows measuring the number of views the website had for a particular page and show the analytics in representative away.
