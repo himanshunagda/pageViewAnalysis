@@ -10,4 +10,4 @@ const aboutSchema = new Schema({
     },
 })
 
-module.exports = mongoose.model("about", aboutSchema)
+module.exports = mongoose.model("aboutPageViews", aboutSchema)

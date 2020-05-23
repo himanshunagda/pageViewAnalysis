@@ -11,4 +11,4 @@ const userSchema = new Schema({
     created_at: { type: Date, required: true, default: Date.now }
 })
 
-module.exports = mongoose.model("users", userSchema)
+module.exports = mongoose.model("activeUsers", userSchema)

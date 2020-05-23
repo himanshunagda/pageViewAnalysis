@@ -7,4 +7,4 @@ const browserSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model("browser", browserSchema)
+module.exports = mongoose.model("browserType", browserSchema)

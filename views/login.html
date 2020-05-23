@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PageAnalysis</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var users = [
+            { username: 'user1', password: 'pass1' },
+            { username: 'user2', password: 'pass2' },
+            { username: 'user3', password: 'pass3' }
+        ];
+        function validate() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if (username == null || username == "") {
+                alert("Please enter the username.");
+                return false;
+            }
+            if (password == null || password == "") {
+                alert("Please enter the password.");
+                return false;
+            }
+            let token;
+            if (username == users[0].username && password == users[0].password) {
+                var xhr = new XMLHttpRequest();
+
+                xhr.open("POST", "/api/token", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    username: users[0].username
+                }));
+                xhr.onload = function () {
+                    token = JSON.parse(this.responseText);
+                    localStorage.setItem('token', token.token);
+                }
+                window.location.href = 'http://localhost:4000/home';
+            } else {
+                alert('Incorrect Password');
+            }
+            alert('Login successful');
+
+        }
+
+    </script>
+    </script>
+    <style>
+        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+        .row.content {
+            height: 550px
+        }
+
+        /* Set gray background color and 100% height */
+        .sidenav {
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+
+        /* On small screens, set height to 'auto' for the grid */
+        @media screen and (max-width: 767px) {
+            .row.content {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <form class="form-signin" id="form_id" method="post" name="myform">
+            <h2 class="form-signin-heading">Please login</h2>
+            <input type="text" id="username" class="form-control" name="username" placeholder="Email Address"
+                required="" autofocus="" />
+            <input type="password" id="password" class="form-control" name="password" placeholder="Password"
+                required="" />
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+            </label>
+            <input type="button" value="Login" id="submit" onclick="validate();" />
+        </form>
+    </div>
+    </div>
+    </div>
+    </form>
+
+
+</body>
+
+</html>

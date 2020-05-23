@@ -10,4 +10,4 @@ const statSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model("stat", statSchema)
+module.exports = mongoose.model("homePageViews", statSchema)
