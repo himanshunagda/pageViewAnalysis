@@ -15,6 +15,9 @@ For example, some of the Filter options are:
 - Get page views by a browser name
 - Get page activity for a last 30 mins.
 
+### Additional Implemetation ###
+Backend API calls are secured with JWT token (calling middleware) which gets created everytime when user login.
+
 ### Technology Stack ###
 Backend: NodeJS, Mongoose
 Frontend: HTML, CSS, Bootstrap
@@ -53,8 +56,10 @@ Explain how to install all development dependencies.
  - Once development server is running, an login page can be accessed on URL http://localhost:4000/
  - For sample login, 3 samples users has been already created. Login with following credentials: 
    username: user1 or user2 or user3
+   
    password: pass1, pass2. pass3
  - After login, dashboard can be seen as session is created for loggedIn User.
+ - Views of web pages (Home and AboutUs) are different from each other.
  
  
  
