@@ -55,6 +55,7 @@ Explain how to install all development dependencies.
  ### Basic Steps ###
  - Once development server is running, an login page can be accessed on URL http://localhost:4000/
  - For sample login, 3 samples users has been already created. Login with following credentials: 
+   
    username: user1 or user2 or user3
    
    password: pass1, pass2. pass3
