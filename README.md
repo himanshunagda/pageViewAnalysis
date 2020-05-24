@@ -11,7 +11,7 @@ For example, some of the Filter options are:
 - Collect all page views
 - Get page views by page id
 - Get page views by country
-- Get page views by countries. (For sample, we used Germany, India, Unitted Stated and United Kingdom as countries) (Graph)
+- Get page views by countries. (For sample, we used Germany, Hong Kong, Unitted Stated and United Kingdom as countries) (Graph)
 - Get page views by a browser name
 - Get page activity for a last 30 mins.
 - Returning user rate (for this application, returning user rate is calculated for user who visits homepage for more than 1 time.)
@@ -63,6 +63,6 @@ Explain how to install all development dependencies.
  - After login, dashboard can be seen as session is created for loggedIn User.
  - Views of web pages (Home and AboutUs) are different from each other.
  
- 
+
 ### Abbreviation ###
 DE--Deutchland
