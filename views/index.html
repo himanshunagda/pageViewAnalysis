@@ -42,16 +42,16 @@
 
         // plot graph for countries
         function drawBasic() {
-            let germany, india, us, uk;
+            let germany, hk, us, uk;
             if (countries[0] != 0) {
                 germany = countries[0] + 1;
             } else {
                 germany = countries[0]
             }
             if (countries[1] != 0) {
-                india = countries[1] + 1;
+                hk = countries[1] + 1;
             } else {
-                india = countries[1];
+                hk = countries[1];
             }
             if (countries[2] != 0) {
                 us = countries[2] + 1;
@@ -66,7 +66,7 @@
             var data = google.visualization.arrayToDataTable([
                 ['Countries', 'Views',],
                 ['Germany', germany],
-                ['India', india],
+                ['Hong Kong', hk],
                 ['United States', us],
                 ['United Kingdom', uk]
             ]);
@@ -344,7 +344,7 @@
                             <select id="dynamic_select">
                                 <option value="" selected>Select Country</option>
                                 <option value="Germany" onClick="getSelected(this)">Germany</option>
-                                <option value="India" onClick="getSelected(this)">India</option>
+                                <option value="HK" onClick="getSelected(this)">Hong Kong</option>
                                 <option value="US" onClick="getSelected(this)">United States</option>
                                 <option value="UK" onClick="getSelected(this)">United Kingdom</option>
                             </select>

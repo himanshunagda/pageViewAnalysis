@@ -47,11 +47,11 @@ const filterAllViews = (inputArr) => {
         inputArr.forEach(country => {
             if (country.country == 'DE') {
                 country1.push(country)
-            } else if (country.country == 'INDIA') {
+            } else if (country.country == 'HK') {
                 country2.push(country)
             } else if (country.country == 'US') {
                 country3.push(country)
-            } else if (country.country == 'UK') {
+            } else if (country.country == 'GB') {
                 country4.push(country)
             }
         })
@@ -89,7 +89,7 @@ const filterViewsByCountry = async (country) => {
         let finalArr = await filterAllViews(result);
         if (country === 'Germany') {
             view = finalArr[0];
-        } else if (country === 'India') {
+        } else if (country === 'HK') {
             view = finalArr[1]
         } else if (country === 'US') {
             view = finalArr[2]
