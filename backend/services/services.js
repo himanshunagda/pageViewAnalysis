@@ -8,8 +8,11 @@ var browser = require('../../models/addBrowser');
 var users = require('../../models/activeusers');
 var addViews = require('../../models/aboutPage');
 var session = require('../../models/session');
-const jwt = require("jsonwebtoken")
 
+/**
+ * Find country
+ * @return {object} object with location info
+ */
 const getUserCountry = async () => {
     try {
         let url = 'https://ipinfo.io';
@@ -25,18 +28,23 @@ const getUserCountry = async () => {
         let response = await rp(options);
         return response
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
-const filterAllViews = (finalResult) => {
+/**
+ * filter views from array
+ * @param {array} inputArr input array for filtering
+ * @return {array} array of all assets
+ */
+const filterAllViews = (inputArr) => {
     try {
         let country1 = [];
         let country2 = [];
         let country3 = [];
         let country4 = [];
-        finalResult.forEach(country => {
+        inputArr.forEach(country => {
             if (country.country == 'DE') {
                 country1.push(country)
             } else if (country.country == 'INDIA') {
@@ -49,22 +57,31 @@ const filterAllViews = (finalResult) => {
         })
         return [country1.length, country2.length, country3.length, country4.length]
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * views from different location
+ * @return {array} array of views for different countries
+ */
 const getUsersFromCountries = async () => {
     try {
         let finalResult = await addCountry.find({}, "country");
         let finalArr = await filterAllViews(finalResult);
         return finalArr
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * filter views by country name
+ * @param {string} country country name
+ * @return {object} object with number of views from given country
+ */
 const filterViewsByCountry = async (country) => {
     try {
         let view;
@@ -81,11 +98,16 @@ const filterViewsByCountry = async (country) => {
         }
         return { value: view };
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * filter array
+ * @param {string} pageId pageId name of page
+ * @return {number} number of views
+ */
 const filterByPageId = async (pageId) => {
     try {
         let views;
@@ -101,20 +123,31 @@ const filterByPageId = async (pageId) => {
         views = result[0].count;
         return views
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
+
+/**
+ * filter views by pageId
+ * @param {string} pageId pageId name of page
+ * @return {number} number of views
+ */
 const filterViewsByPageId = async (pageId) => {
     try {
         let finalResult = await filterByPageId(pageId);
         return finalResult
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * add browser type to DB
+ * @param {string} browserName name of browser
+ * @return {boolean} true if value saved
+ */
 const addBrowserType = async (browserName) => {
     try {
         let list = new browser();
@@ -123,17 +156,23 @@ const addBrowserType = async (browserName) => {
         });
         return true;
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
-const filterViews = (finalResult) => {
+
+/**
+ * filter array for getting views
+ * @param {array} inputArr input array
+ * @return {array} array with number of views based on browser
+ */
+const filterViewsForBrowser = (inputArr) => {
     try {
         let browser1 = [];
         let browser2 = [];
         let browser3 = [];
         let browser4 = [];
-        finalResult.forEach(result => {
+        inputArr.forEach(result => {
             if (result.browser == 'chrome') {
                 browser1.push(result)
             } else if (result.browser == 'safari') {
@@ -144,23 +183,32 @@ const filterViews = (finalResult) => {
                 browser4.push(result)
             }
         })
-        return [browser1.length, browser2.length, browser2.length, browser3.length]
+        return [browser1.length, browser2.length, browser3.length, browser4.length]
     } catch (error) {
-        logger.error(error);
-        throw error;
-    }
-}
-const filterViewsByBrowser = async () => {
-    try {
-        let result = await browser.find({}, "browser");
-        let finalArr = await filterViews(result);
-        return finalArr
-    } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * filter views by browser type
+ * @return {array} array based on number of views
+ */
+const filterViewsByBrowser = async () => {
+    try {
+        let result = await browser.find({}, "browser");
+        let finalArr = await filterViewsForBrowser(result);
+        return finalArr
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+/**
+ * Get active users in time range
+ * @return {object} object with number of users
+ */
 const getActiveUsersinTime = async () => {
     try {
         let finalResult = await users.find({ "created_at": { $gt: new Date(Date.now() - 30 * 60 * 1000) } });
@@ -168,11 +216,15 @@ const getActiveUsersinTime = async () => {
             views: finalResult.length
         };
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * add and return user country for about us page
+ * @return {object} country name 
+ */
 const addUserCountry = async () => {
     try {
         let views = await getUserCountry();
@@ -181,50 +233,44 @@ const addUserCountry = async () => {
         let value = list.save({});
         return views
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * filter views for aboutUs page
+ * @return {array} finalArr with number of views
+ */
 const filterViewsAboutPage = async () => {
     try {
         let result = await addViews.find({}, "country");
         let finalArr = await filterAllViews(result);
         return finalArr
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
-const generateToken = async (username) => {
-    try {
-        const jwtKey = "my_secret_key";
-        const jwtExpirySeconds = 300;
-        const token = jwt.sign({ username }, jwtKey, {
-            algorithm: "HS256",
-            expiresIn: jwtExpirySeconds,
-        })
-        let addSessionToken = new session();
-        addSessionToken.session = token;
-        let value = addSessionToken.save({});
-        return { token: token };
-    } catch (error) {
-        logger.error(error);
-        throw error;
-    }
-}
-
+/**
+ * Get number of views for userpage
+ * @return {object} number of views
+ */
 const viewValue = async () => {
     try {
         let result = await stats.find({ name: "counter" });
         return result[0];
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
 
+/**
+ * add country to DB for home page
+ * @return {object} alocation info
+ */
 const addCountryToDB = async () => {
     try {
         let countryInfo = await getUserCountry();
@@ -233,18 +279,53 @@ const addCountryToDB = async () => {
         let result = await list.save({});
         return countryInfo;
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
-const getSession = async () => {
+
+/**
+ * save same session value to DB 
+ * @param {string} token token
+ * @return {boolean} true if session saved
+ */
+const saveSameSession = async (token) => {
     try {
-        let sessions = await session.find({}, 'session')
+        let addSessionToken = new session();
+        addSessionToken.session = token;
+        let value = addSessionToken.save({});
+        return true
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+/**
+ * returning user rate
+ * @return {object} returning user rate
+ */
+const userRate = async () => {
+    try {
+        let result = await session.find({}, 'session');
+        const resultNew = result.reduce((a, { session }) => {
+            a[session] = a[session] || { session, times: -1 };
+            a[session].times += 1;
+            return a;
+        }, {})
+        let sameSession = [];
+        let newArr = Object.values(resultNew);
+        newArr.forEach(result => {
+            if (result.times > 1) {
+                sameSession.push(result)
+            }
+        })
+        let userRate = ((sameSession.length) / (newArr.length)) * 100;
         return {
-            value: sessions.length
+            value: userRate
         }
     } catch (error) {
-        logger.error(error);
+        console.log(error);
         throw error;
     }
 }
@@ -258,8 +339,8 @@ module.exports = {
     getActiveUsersinTime,
     addUserCountry,
     filterViewsAboutPage,
-    generateToken,
     viewValue,
     addCountryToDB,
-    getSession
+    saveSameSession,
+    userRate
 }

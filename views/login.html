@@ -27,23 +27,24 @@
                 return false;
             }
             let token;
-            if (username == users[0].username && password == users[0].password) {
-                var xhr = new XMLHttpRequest();
+            for (let i = 0; i < users.length; i++) {
+                if (username == users[i].username && password == users[i].password) {
+                    var xhr = new XMLHttpRequest();
 
-                xhr.open("POST", "/api/token", true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify({
-                    username: users[0].username
-                }));
-                xhr.onload = function () {
-                    token = JSON.parse(this.responseText);
-                    localStorage.setItem('token', token.token);
+                    xhr.open("POST", "/api/token", true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify({
+                        username: users[i].username
+                    }));
+                    xhr.onload = function () {
+                        token = JSON.parse(this.responseText);
+                        localStorage.setItem('token', token.token);
+                    }
+                    window.location.href = 'http://localhost:4000/home';
+                    alert('Login successful');
                 }
-                window.location.href = 'http://localhost:4000/home';
-            } else {
-                alert('Incorrect Password');
             }
-            alert('Login successful');
+           
 
         }
 

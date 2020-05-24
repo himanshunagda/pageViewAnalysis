@@ -12,6 +12,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         var token;
+        // check if logged in or not
         function isLoggedIn() {
             token = localStorage.getItem('token')
             if (!token) {
@@ -20,27 +21,13 @@
         }
         var test = isLoggedIn();
 
-        function addCountryToDB() {
-            let country;
-            //var output = document.getElementById('counter');
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/api/addCountryToDB", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({
-            }));
-            xhr.onload = function () {
-                country = this.responseText;
-                var output = document.getElementById('country');
-                output.innerHTML = country;
-            }
-        }
-        var getCountryName = addCountryToDB();
-
+        // plot graphs
         google.charts.load('current', { packages: ['corechart', 'bar'] });
         google.charts.setOnLoadCallback(drawBasic);
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 
+        // get data from graph (views over globe)
         var countries;
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/getUsersFromCountries", true);
@@ -52,6 +39,8 @@
             countries = JSON.parse(this.responseText);
         }
         setTimeout(function () { drawBasic() }, 300);
+
+        // plot graph for countries
         function drawBasic() {
             let germany, india, us, uk;
             if (countries[0] != 0) {
@@ -96,15 +85,19 @@
             chart.draw(data, options);
         }
 
+        // get values for browser plot
         var browserViews;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "/api/filterViewsByBrowser", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({}));
+        xhr.send(JSON.stringify({
+        }));
         xhr.onload = function () {
             browserViews = JSON.parse(this.responseText);
         }
-        setTimeout(function () { drawChart() }, 300);
+        setTimeout(function () { drawChart() }, 500);
+
+        // plot graph views based on browser
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Views', 'browser'],
@@ -113,15 +106,14 @@
                 ['Firefox', browserViews[2]],
                 ['Edge', browserViews[3]]
             ]);
-
             var options = {
                 title: 'Views based on browser'
             };
-
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
             chart.draw(data, options);
         }
+
+        // filter views by country
         $(function getSelected() {
             let views;
             var output = document.getElementById('output');
@@ -131,6 +123,7 @@
                 xhr.open("POST", "/api/filterViewsByCountry", true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
+                    token: token,
                     country: value
                 }));
                 xhr.onload = function () {
@@ -139,7 +132,26 @@
                 }
             });
         });
-        $(function getviews() {
+
+        // add country to database
+        function addCountryToDB() {
+            let country;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/addCountryToDB", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                token: token
+            }));
+            xhr.onload = function () {
+                country = this.responseText;
+                var output = document.getElementById('country');
+                output.innerHTML = country;
+            }
+        }
+        var getCountryName = addCountryToDB();
+
+        // filter views by pageId
+        $(function filterViewsByPageId() {
             let views;
             var output = document.getElementById('outputTest');
             $('#dynamic').on('change', function () {
@@ -148,6 +160,7 @@
                 xhr.open("POST", "/api/filterViewsByPageId", true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify({
+                    token: token,
                     page: value
                 }));
                 xhr.onload = function () {
@@ -157,6 +170,7 @@
             });
         });
 
+        // get browser details
         var browser = (function (agent) {
             switch (true) {
                 case agent.indexOf("edge") > -1: return "edge";
@@ -169,11 +183,14 @@
                 default: return "other";
             }
         })(window.navigator.userAgent.toLowerCase());
+
+        // add browser type to database
         function browserValue(browser) {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/api/addBrowserType", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
+                token: token,
                 browser: browser
             }));
             xhr.onload = function () {
@@ -181,12 +198,14 @@
         }
         var addBrowser = browserValue(browser);
 
+        // get views for home page
         function viewValue() {
             let count;
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/api/viewValue", true);
+            xhr.open("POST", "/api/viewValue", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
+                token: token
             }));
             xhr.onload = function () {
                 count = this.responseText;
@@ -195,6 +214,42 @@
             }
         }
         var getCounterValue = viewValue();
+
+        // save same session to database
+        function saveSameSession() {
+            let country;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/saveSameSession", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                token: token
+            }));
+            xhr.onload = function () {
+                country = this.responseText;
+            }
+        }
+        var sessionSaved = saveSameSession();
+        function signOut() {
+            localStorage.removeItem('token');
+            window.location.href = "http://localhost:4000/"
+        }
+
+        // calculate returning user rate
+        function calcReturnUser() {
+            let rate;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/userRate", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                token: token
+            }));
+            xhr.onload = function () {
+                rate = this.responseText;
+                var output = document.getElementById('userRate');
+                output.innerHTML = rate;
+            }
+        }
+        var calUserRate = calcReturnUser();
     </script>
     <style>
         /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
@@ -223,6 +278,7 @@
         <div class="navbar">
             <a href="/home">Home</a>
             <a href="/about">AboutUs</a>
+            <button onclick="signOut()">SignOut</button>
         </div>
 
         <div class="col-xl">
@@ -251,8 +307,8 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="well">
-                        <h4>Returning Users rate </h4>
-                        <p>30%</p>
+                        <h4>Returning Users rate (%)</h4>
+                        <span id="userRate"></span>
                     </div>
                 </div>
             </div>
@@ -289,8 +345,8 @@
                                 <option value="" selected>Select Country</option>
                                 <option value="Germany" onClick="getSelected(this)">Germany</option>
                                 <option value="India" onClick="getSelected(this)">India</option>
-                                <option value="US" onClick="getSelected(this)">US</option>
-                                <option value="UK" onClick="getSelected(this)">UK</option>
+                                <option value="US" onClick="getSelected(this)">Unites States</option>
+                                <option value="UK" onClick="getSelected(this)">Unites Kingdom</option>
                             </select>
                         </td>
                         <td>

@@ -1,86 +1,141 @@
 var express = require('express');
 var router = express.Router();
 const services = require('../services/services');
-var session = require('../../models/session');
+const auth = require('../middleware/auth');
 
-const verifyToken = () => {
-    return async (req, res, next) => {
-        let jwtToken = req.body.token;
-        let readFromDB = await session.find({}, "session");
-        let result = readFromDB.includes(readFromDB.find(value => value.session === jwtToken));
-        if (result === false) {
-            res.status(400).send('Server requires application/json')
-        } else {
-            next()
-        }
-    }
-}
-router.get('/', function (req, res, next) {
-    res.send('respond with a resource');
+// API routes for Page Analysis application
+
+/**
+ * @name POST 
+ * @route {POST} /
+ */
+router.post('/', function (req, res, next) {
+    res.send('running');
 });
 
-router.get('/getUserCountry', async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /getUserCountry
+ */
+router.post('/getUserCountry', auth.verifyToken(), async function (req, res, next) {
     let result = await services.getUserCountry();
     res.send(result.country);
 });
 
-router.post('/getUsersFromCountries', verifyToken(), async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /getUsersFromCountries
+ */
+router.post('/getUsersFromCountries', auth.verifyToken(), async function (req, res, next) {
     let result = await services.getUsersFromCountries();
     res.send(result);
 });
 
-router.post('/filterViewsByCountry', async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /filterViewsByCountry
+ */
+router.post('/filterViewsByCountry', auth.verifyToken(), async function (req, res, next) {
     let result = await services.filterViewsByCountry(req.body.country);
     res.send(JSON.stringify(result.value));
 });
 
+/**
+ * @name POST 
+ * @route {POST} /filterViewsByPageId
+ */
 router.post('/filterViewsByPageId', async function (req, res, next) {
     let result = await services.filterViewsByPageId(req.body.page);
     res.send(JSON.stringify(result));
 });
 
+/**
+ * @name POST 
+ * @route {POST} /addBrowserType
+ */
 router.post('/addBrowserType', async function (req, res, next) {
     let result = await services.addBrowserType(req.body.browser);
     res.send(result);
 });
 
+/**
+ * @name GET 
+ * @route {GET} /filterViewsByBrowser
+ */
 router.get('/filterViewsByBrowser', async function (req, res, next) {
     let result = await services.filterViewsByBrowser();
     res.send(result);
 });
 
+/**
+ * @name GET 
+ * @route {GET} /getActiveUsersinTime
+ */
 router.get('/getActiveUsersinTime', async function (req, res, next) {
     let result = await services.getActiveUsersinTime();
     res.send(JSON.stringify(result.views));
 });
 
-router.post('/addUserCountry', verifyToken(), async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /addUserCountry
+ */
+router.post('/addUserCountry', auth.verifyToken(), async function (req, res, next) {
     let result = await services.addUserCountry();
     res.send((result));
 });
 
-router.get('/filterViewsAboutPage', async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /filterViewsAboutPage
+ */
+router.post('/filterViewsAboutPage', auth.verifyToken(), async function (req, res, next) {
     let result = await services.filterViewsAboutPage();
     res.send((result));
 });
 
+/**
+ * @name POST 
+ * @route {POST} /token
+ */
 router.post('/token', async function (req, res, next) {
-    let result = await services.generateToken(req.body.username);
+    let result = await auth.generateToken(req.body.username);
     res.send(result);
 });
 
-router.get('/viewValue', async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /viewValue
+ */
+router.post('/viewValue', auth.verifyToken(), async function (req, res, next) {
     let result = await services.viewValue();
     res.send(JSON.stringify(result.count));
 });
 
-router.get('/addCountryToDB', async function (req, res, next) {
+/**
+ * @name POST 
+ * @route {POST} /addCountryToDB
+ */
+router.post('/addCountryToDB', auth.verifyToken(), async function (req, res, next) {
     let result = await services.addCountryToDB();
     res.send(result.country);
 });
 
-router.get('/getSession', async function (req, res, next) {
-    let result = await services.getSession();
+/**
+ * @name POST 
+ * @route {POST} /saveSameSession
+ */
+router.post('/saveSameSession', auth.verifyToken(), async function (req, res, next) {
+    let result = await services.saveSameSession(req.body.token);
     res.send(result);
+});
+
+/**
+ * @name POST 
+ * @route {POST} /userRate
+ */
+router.post('/userRate', auth.verifyToken(), async function (req, res, next) {
+    let result = await services.userRate();
+    res.send(JSON.stringify(result.value));
 });
 module.exports = router;

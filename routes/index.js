@@ -13,9 +13,7 @@ router.get('/', function (req, res, next) {
   stats.findOneAndUpdate({ name: "counter" }, { $inc: { count: 1 } }, function (err, counter) {
     userlist.count = counter.count;
     userlist.created_at = Date.now();
-    userlist.save(function (err, result) {
-    });
-    if (err) throw err;
+    userlist.save({});
     if (!counter) {
       res.render('index', { title: "Welcome to Page View Analytic APP", userview: userview });
     }
@@ -23,7 +21,6 @@ router.get('/', function (req, res, next) {
       res.render('index', { title: "Welcome to Page View Analytic APP", userview: userview });
     }
   });
-  
   request.get('http://localhost:4000/api/getActiveUsersinTime', function (error, response, body) {
     userview = body;
   });
