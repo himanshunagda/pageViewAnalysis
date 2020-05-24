@@ -14,6 +14,7 @@ For example, some of the Filter options are:
 - Get page views by countries. (For sample, we used Germany, India, Unitted Stated and United Kingdom as countries) (Graph)
 - Get page views by a browser name
 - Get page activity for a last 30 mins.
+- Returning user rate (for this application, returning user rate is calculated for user who visits homepage for more than 1 time.)
 
 ### Additional Implemetation ###
 Backend API calls are secured with JWT token (calling middleware) which gets created everytime when user login.
