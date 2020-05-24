@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var request = require('request');
 
-mongoose.connect('mongodb://127.0.0.1:27017/Stat');
+mongoose.connect('mongodb://127.0.0.1:27017/Stat', { useNewUrlParser: true, useUnifiedTopology: true });
 var stats = require('../models/homePageViews');
 var users = require('../models/activeusers');
 var userview;

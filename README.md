@@ -64,4 +64,5 @@ Explain how to install all development dependencies.
  - Views of web pages (Home and AboutUs) are different from each other.
  
  
- 
+### Abbreviation ###
+DE--Deutchland

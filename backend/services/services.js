@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/Stat');
+mongoose.connect('mongodb://127.0.0.1:27017/Stat', { useNewUrlParser: true, useUnifiedTopology: true });
 var addCountry = require('../../models/country');
 var stats = require('../../models/homePageViews');
 var aboutPageViews = require('../../models/aboutPageViews');
