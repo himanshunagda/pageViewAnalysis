@@ -59,7 +59,7 @@ Explain how to install all development dependencies.
    
    username: user1 or user2 or user3
    
-   password: pass1, pass2. pass3
+   password: pass1, pass2, pass3
  - After login, dashboard can be seen as session is created for loggedIn User.
  - Views of web pages (Home and AboutUs) are different from each other.
  
