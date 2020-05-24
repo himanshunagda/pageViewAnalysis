@@ -68,7 +68,7 @@
                 ['Germany', germany],
                 ['India', india],
                 ['United States', us],
-                ['Unites Kingdom', uk]
+                ['United Kingdom', uk]
             ]);
             var options = {
                 title: 'Views by Countries',
@@ -86,7 +86,7 @@
         }
 
         // get values for browser plot
-        var browserViews;
+        var browserViews = [];
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "/api/filterViewsByBrowser", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -345,8 +345,8 @@
                                 <option value="" selected>Select Country</option>
                                 <option value="Germany" onClick="getSelected(this)">Germany</option>
                                 <option value="India" onClick="getSelected(this)">India</option>
-                                <option value="US" onClick="getSelected(this)">Unites States</option>
-                                <option value="UK" onClick="getSelected(this)">Unites Kingdom</option>
+                                <option value="US" onClick="getSelected(this)">United States</option>
+                                <option value="UK" onClick="getSelected(this)">United Kingdom</option>
                             </select>
                         </td>
                         <td>
@@ -375,7 +375,7 @@
                         </td>
                         <td>
 
-                            <div class="box3" id="piechart" style="width: 700px; height: 500px;"></div>
+                            <div class="box3" id="piechart" style="width: 550px; height: 500px;"></div>
                             <div class="box2">
                                 <h4>Views based on browser</h4>
                             </div>
